@@ -1,0 +1,25 @@
+{
+  "name": "bandera",
+  "version": "1.0.0",
+  "description": "Flagify a photo with the Argentinean flag",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gztomas/bandera.git"
+  },
+  "author": "gztomas@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gztomas/bandera/issues"
+  },
+  "homepage": "https://github.com/gztomas/bandera#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "connect-multiparty": "^2.0.0",
+    "express": "^4.14.0",
+    "imagemagick": "^0.1.3"
+  }
+}
