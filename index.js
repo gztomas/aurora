@@ -1,11 +1,10 @@
 var express = require("express");
 var multipart = require('connect-multiparty');
 var fs = require('fs');
-var im = require('imagemagick');
+var gm = require('gm').subClass({imageMagick: true});
 
 var multipartMiddleware = multipart();
 var app = express();
-var flag = fs.readFileSync('flag.png');
 
 app.use(express.static('public'));
 
@@ -20,18 +19,25 @@ app.post('/upload', multipartMiddleware, function(req, res) {
     } else {
       var newPath = __dirname + "/uploads/full_" + imageName;
       var thumbPath = __dirname + "/uploads/thumb_" + imageName;
+
       fs.writeFile(newPath, data, function(err) {
-        im.resize({
-          srcPath: newPath,
-          dstPath: thumbPath,
-          width: 200
-        }, function(err, stdout, stderr) {
-          if (err) {
-            throw err;
-          }
-          console.log('resized image to fit within 200x200px');
-        });
-        res.redirect("/uploads/full_" + imageName);
+        gm(newPath)
+          .size(function(err, size) {
+            gm('transparent-flag.png')
+              .size(function(err, flagSize) {
+                this.resize(size.width * flagSize.height / size.height, size.height)
+                  .write('resized-flag', function(err) {
+                    gm(newPath)
+                      .composite('resized-flag')
+                      .write(thumbPath, function(err) {
+                        if (err) {
+                          throw err;
+                        }
+                        res.redirect("/uploads/thumb_" + imageName);
+                      })
+                  })
+              })
+          })
       });
     }
   });
